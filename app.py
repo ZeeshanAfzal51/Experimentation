@@ -142,17 +142,20 @@ if pdf_files and excel_file:
     for success_message, _, _ in summaries:
         st.markdown(f"**{success_message}**")
 
+    # Save the updated Excel file with the same name as the uploaded file
+    updated_excel_file_name = excel_file.name
+    workbook.save(updated_excel_file_name)
+
+    # Provide download link for the updated Excel file
+    with open(updated_excel_file_name, "rb") as file:
+        st.download_button(
+            label="Download Updated Excel File",
+            data=file,
+            file_name=updated_excel_file_name,
+            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        )
+
     # Display all summaries
     for _, file_name, summary_df in summaries:
         st.markdown(f"**{file_name} Structured Summary:**")
         st.table(summary_df)
-
-    # Save the updated Excel file and provide download link
-    workbook.save("updated_excel.xlsx")
-    with open("updated_excel.xlsx", "rb") as file:
-        st.download_button(
-            label="Download Updated Excel File",
-            data=file,
-            file_name="updated_excel.xlsx",
-            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-        )

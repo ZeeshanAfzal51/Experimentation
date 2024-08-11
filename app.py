@@ -82,7 +82,7 @@ if pdf_files and excel_file:
         for line in lines:
             for key in parameters.keys():
                 if key in line:
-                    value = line.split(":")[-1].strip().rstrip('"')  # Remove trailing quotes
+                    value = line.split(":")[-1].strip().strip('"')  # Remove both leading and trailing quotes
                     parameters[key] = value
         return parameters
 
@@ -149,4 +149,3 @@ if pdf_files and excel_file:
             file_name="updated_excel.xlsx",
             mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
         )
-

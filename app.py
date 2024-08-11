@@ -91,8 +91,6 @@ if pdf_files and excel_file:
                     parameters[key] = value
 
         return parameters
-
-    summaries = []
     
     for pdf_file in pdf_files:
         text_data = extract_text_from_pdf(pdf_file)
@@ -132,16 +130,9 @@ if pdf_files and excel_file:
         row_data = [parameters[key] for key in parameters.keys()]
         worksheet.append(row_data)
 
-        # Store success messages and summaries separately
-        success_message = f"Data from {pdf_file.name} has been successfully added to the Excel file"
-        summary_df = pd.DataFrame(parameters.items(), columns=["Parameter", "Value"])
-        
-        summaries.append((success_message, pdf_file.name, summary_df))
+        # Display success message
+        st.markdown(f"**Data from {pdf_file.name} has been successfully added to the Excel file**")
     
-    # Display all success messages
-    for success_message, _, _ in summaries:
-        st.markdown(f"**{success_message}**")
-
     # Save the updated Excel file with the same name as the uploaded file
     updated_excel_file_name = excel_file.name
     workbook.save(updated_excel_file_name)
@@ -156,6 +147,7 @@ if pdf_files and excel_file:
         )
 
     # Display all summaries
-    for _, file_name, summary_df in summaries:
-        st.markdown(f"**{file_name} Structured Summary:**")
+    for pdf_file in pdf_files:
+        st.markdown(f"**{pdf_file.name} Structured Summary:**")
+        summary_df = pd.DataFrame(parameters.items(), columns=["Parameter", "Value"])
         st.table(summary_df)

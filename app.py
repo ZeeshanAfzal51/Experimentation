@@ -78,19 +78,17 @@ if pdf_files and excel_file:
             "Remarks": "NA",
             "Vendor Code": "NA"
         }
-        
         lines = response_text.splitlines()
         for line in lines:
             for key in parameters.keys():
                 if key in line:
                     value = line.split(":")[-1].strip()
-                    # Remove surrounding double quotes and trailing commas
-                    value = value.strip('"').strip(',')
-                    # Remove trailing double quotes
-                    value = value.rstrip('"')
+                    if value.endswith(','):
+                        value = value[:-1].strip()
                     parameters[key] = value
-        
         return parameters
+
+    all_summaries = []  # To store all structured summaries for later display
 
     for pdf_file in pdf_files:
         text_data = extract_text_from_pdf(pdf_file)
@@ -130,11 +128,10 @@ if pdf_files and excel_file:
         row_data = [parameters[key] for key in parameters.keys()]
         worksheet.append(row_data)
 
-        # Display confirmation and structured summary
+        # Display confirmation and collect summary for later display
         st.markdown(f"**Data from {pdf_file.name} has been successfully added to the Excel file**")
-
         summary_df = pd.DataFrame(parameters.items(), columns=["Parameter", "Value"])
-        st.table(summary_df)
+        all_summaries.append((pdf_file.name, summary_df))  # Store filename and summary
 
     # Save the updated Excel file and provide download link
     workbook.save("updated_excel.xlsx")
@@ -146,3 +143,7 @@ if pdf_files and excel_file:
             mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
         )
 
+    # Display all summaries after processing all PDFs
+    for filename, summary_df in all_summaries:
+        st.markdown(f"**{filename} Structured Summary:**")
+        st.table(summary_df)

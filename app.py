@@ -89,9 +89,11 @@ if pdf_files and excel_file:
                     # Remove trailing double quotes
                     value = value.rstrip('"')
                     parameters[key] = value
-        
+
         return parameters
 
+    summaries = []
+    
     for pdf_file in pdf_files:
         text_data = extract_text_from_pdf(pdf_file)
         ocr_results = convert_pdf_to_images_and_ocr(pdf_file)
@@ -130,11 +132,19 @@ if pdf_files and excel_file:
         row_data = [parameters[key] for key in parameters.keys()]
         worksheet.append(row_data)
 
-        # Display confirmation and structured summary
-        st.markdown(f"**Data from {pdf_file.name} has been successfully added to the Excel file**")
-
-        st.markdown(f"**{pdf_file.name} Structured Summary:**")
+        # Store success messages and summaries separately
+        success_message = f"Data from {pdf_file.name} has been successfully added to the Excel file"
         summary_df = pd.DataFrame(parameters.items(), columns=["Parameter", "Value"])
+        
+        summaries.append((success_message, pdf_file.name, summary_df))
+    
+    # Display all success messages
+    for success_message, _, _ in summaries:
+        st.markdown(f"**{success_message}**")
+
+    # Display all summaries
+    for _, file_name, summary_df in summaries:
+        st.markdown(f"**{file_name} Structured Summary:**")
         st.table(summary_df)
 
     # Save the updated Excel file and provide download link

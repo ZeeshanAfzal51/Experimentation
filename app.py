@@ -82,13 +82,12 @@ if pdf_files and excel_file:
         for line in lines:
             for key in parameters.keys():
                 if key in line:
-                    value = line.split(":")[-1].strip().strip('"')
-                    if value.endswith(','):
-                        value = value[:-1].strip()
+                    value = line.split(":")[-1].strip().rstrip('"')  # Remove trailing quotes
                     parameters[key] = value
         return parameters
 
-    all_summaries = []  # To store all structured summaries for later display
+    successful_files = []
+    summaries = []
 
     for pdf_file in pdf_files:
         text_data = extract_text_from_pdf(pdf_file)
@@ -128,10 +127,18 @@ if pdf_files and excel_file:
         row_data = [parameters[key] for key in parameters.keys()]
         worksheet.append(row_data)
 
-        # Display confirmation and collect summary for later display
-        st.markdown(f"**Data from {pdf_file.name} has been successfully added to the Excel file**")
-        summary_df = pd.DataFrame(parameters.items(), columns=["Parameter", "Value"])
-        all_summaries.append((pdf_file.name, summary_df))  # Store filename and summary
+        # Store success message and summary for later display
+        successful_files.append(f"Data from {pdf_file.name} has been successfully added to the Excel file")
+        summaries.append((pdf_file.name, pd.DataFrame(parameters.items(), columns=["Parameter", "Value"])))
+
+    # Display all success messages
+    for message in successful_files:
+        st.markdown(f"**{message}**")
+
+    # Display all structured summaries
+    for file_name, summary_df in summaries:
+        st.markdown(f"**{file_name} Structured Summary:**")
+        st.table(summary_df)
 
     # Save the updated Excel file and provide download link
     workbook.save("updated_excel.xlsx")
@@ -142,9 +149,4 @@ if pdf_files and excel_file:
             file_name="updated_excel.xlsx",
             mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
         )
-
-    # Display all summaries after processing all PDFs
-    for filename, summary_df in all_summaries:
-        st.markdown(f"**{filename} Structured Summary:**")
-        st.table(summary_df)
 

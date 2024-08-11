@@ -82,7 +82,7 @@ if pdf_files and excel_file:
         for line in lines:
             for key in parameters.keys():
                 if key in line:
-                    value = line.split(":")[-1].strip()
+                    value = line.split(":")[-1].strip().strip('"')
                     if value.endswith(','):
                         value = value[:-1].strip()
                     parameters[key] = value
@@ -147,3 +147,4 @@ if pdf_files and excel_file:
     for filename, summary_df in all_summaries:
         st.markdown(f"**{filename} Structured Summary:**")
         st.table(summary_df)
+

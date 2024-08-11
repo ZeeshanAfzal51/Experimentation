@@ -60,7 +60,7 @@ if pdf_files and excel_file:
 
     def clean_value(value):
         # Remove leading/trailing quotes and commas
-        return value.strip().strip('"').strip(',')
+        return value.strip().strip('"').rstrip(',').strip()
 
     def extract_parameters_from_response(response_text):
         parameters = {

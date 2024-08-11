@@ -86,6 +86,8 @@ if pdf_files and excel_file:
                     value = line.split(":")[-1].strip()
                     # Remove surrounding double quotes and trailing commas
                     value = value.strip('"').strip(',')
+                    # Remove trailing double quotes
+                    value = value.rstrip('"')
                     parameters[key] = value
         
         return parameters
@@ -143,3 +145,4 @@ if pdf_files and excel_file:
             file_name="updated_excel.xlsx",
             mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
         )
+

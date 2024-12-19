@@ -9,7 +9,7 @@ import os
 import pandas as pd
 
 # Set the API key for Google Generative AI
-os.environ["GEMINI_API_KEY"] = "AIzaSyASDTPkScf6Lxawp2zByRXlUoMuDYl2yqg"
+os.environ["GEMINI_API_KEY"] = "AIzaSyDHwT7U5slXZX3oAyBnvGSHRX_AhX06GwY"
 genai.configure(api_key=os.environ["GEMINI_API_KEY"])
 
 # Title
